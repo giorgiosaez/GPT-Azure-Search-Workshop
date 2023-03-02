@@ -1,192 +1,188 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "searchServiceName": {
-            "type": "string",
-            "defaultValue": "mysearchservice",
-            "metadata": {
-                "description": "The name of the Azure Cognitive Search service."
-            }
-        },
-        "openAiResourceName": {
-            "type": "string",
-            "defaultValue": "myopenairesource",
-            "metadata": {
-                "description": "The name of the Azure OpenAI resource."
-            }
-        },
-        "keyVaultName": {
-            "type": "string",
-            "defaultValue": "mykeyvault",
-            "metadata": {
-                "description": "The name of the Azure Key Vault."
-            }
-        },
-        "mlWorkspaceName": {
-            "type": "string",
-            "defaultValue": "mymlworkspace",
-            "metadata": {
-                "description": "The name of the Azure Machine Learning workspace."
-            }
-        },
-        "location": {
-            "type": "string",
-            "defaultValue": "southcentralus",
-            "metadata": {
-                "description": "The location of the Azure resources."
-            }
-        },
-        "sku": {
-            "type": "string",
-            "defaultValue": "standard",
-            "metadata": {
-                "description": "The SKU of the Azure Cognitive Search service."
-            }
-        },
-        "replicaCount": {
-            "type": "int",
-            "defaultValue": 1,
-            "metadata": {
-                "description": "The number of replicas for the Azure Cognitive Search service."
-            }
-        },
-        "vaultSku": {
-            "type": "string",
-            "defaultValue": "standard",
-            "metadata": {
-                "description": "The SKU of the Azure Key Vault."
-            }
-        },
-        "mlComputeSize": {
-            "type": "string",
-            "defaultValue": "Standard_DS3_v2",
-            "metadata": {
-                "description": "The size of the Azure Machine Learning compute instance."
-            }
-        },
-        "mlComputeMinNodes": {
-            "type": "int",
-            "defaultValue": 0,
-            "metadata": {
-                "description": "The minimum number of nodes for the Azure Machine Learning compute instance."
-            }
-        },
-        "mlComputeMaxNodes": {
-            "type": "int",
-            "defaultValue": 5,
-            "metadata": {
-                "description": "The maximum number of nodes for the Azure Machine Learning compute instance."
-            }
-        },
-        "mlComputeIdleSecondsBeforeScaleDown": {
-            "type": "int",
-            "defaultValue": 300,
-            "metadata": {
-                "description": "The number of seconds of idle time before scaling down the Azure Machine Learning compute instance."
-            }
-        }
-    },
-    "resources": [
-        {
-            "type": "Microsoft.Search/searchServices",
-            "apiVersion": "2020-08-01",
-            "name": "[parameters('searchServiceName')]",
-            "location": "[parameters('location')]",
-            "sku": {
-                "name": "[parameters('sku')]"
-            },
-            "properties": {
-                "replicaCount": "[parameters('replicaCount')]"
-            }
-        },
-        {
-            "type": "Microsoft.CognitiveServices/accounts",
-            "apiVersion": "2017-04-18",
-           
-"name": "[parameters('openAiResourceName')]",
-"location": "[parameters('location')]",
-"sku": {
-"name": "S0"
-},
-"kind": "TextAnalytics",
-"properties": {}
-},
-{
-"type": "Microsoft.KeyVault/vaults",
-"apiVersion": "2019-09-01",
-"name": "[parameters('keyVaultName')]",
-"location": "[parameters('location')]",
-"properties": {
-"sku": {
-"name": "[parameters('vaultSku')]"
-},
-"tenantId": "[subscription().tenantId]",
-"accessPolicies": [
-{
-"objectId": "[parameters('objectId')]",
-"tenantId": "[subscription().tenantId]",
-"permissions": {
-"secrets": [
-"get",
-"list"
-]
-}
-}
-]
-}
-},
-{
-"type": "Microsoft.MachineLearningServices/workspaces",
-"apiVersion": "2021-01-01",
-"name": "[parameters('mlWorkspaceName')]",
-"location": "[parameters('location')]",
-"properties": {
-"description": "Azure Machine Learning workspace",
-"compute": {
-"name": "amlcompute",
-"properties": {
-"vmSize": "[parameters('mlComputeSize')]",
-"minNodes": "[parameters('mlComputeMinNodes')]",
-"maxNodes": "[parameters('mlComputeMaxNodes')]",
-"idleSecondsBeforeScaleDown": "[parameters('mlComputeIdleSecondsBeforeScaleDown')]"
-}
-}
-}
-}
-],
-"outputs": {
-"searchServiceEndpoint": {
-"type": "string",
-"value": "[reference(parameters('searchServiceName')).endpoint]"
-},
-"searchServiceAdminKey": {
-"type": "securestring",
-"value": "[listKeys(parameters('searchServiceName'), '2019-05-06').adminKey]"
-},
-"openAiResourceEndpoint": {
-"type": "string",
-"value": "[reference(parameters('openAiResourceName')).endpoint]"
-},
-"openAiResourceKey": {
-"type": "securestring",
-"value": "[listKeys(parameters('openAiResourceName'), '2017-04-18').key1]"
-},
-"keyVaultUrl": {
-"type": "string",
-"value": "[reference(parameters('keyVaultName')).vaultUri]"
-},
-"mlWorkspaceResourceId": {
-"type": "string",
-"value": "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('mlWorkspaceName'))]"
-},
-"mlWorkspaceEndpoint": {
-"type": "string",
-"value": "[reference(parameters('mlWorkspaceName')).containerRegistry]"
-},
-"mlWorkspaceKeyVaultResourceId": {
-"type": "string",
-"value": "[reference(parameters('mlWorkspaceName')).identity.principalId]"
-}
-}
+	"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"searchServiceName": {
+			"type": "string",
+			"defaultValue": "mysearchservice",
+			"metadata": {
+				"description": "The name of the Azure Cognitive Search service."
+			}
+		},
+		"openAiResourceName": {
+			"type": "string",
+			"defaultValue": "myopenairesource",
+			"metadata": {
+				"description": "The name of the Azure OpenAI resource."
+			}
+		},
+		"keyVaultName": {
+			"type": "string",
+			"defaultValue": "mykeyvault",
+			"metadata": {
+				"description": "The name of the Azure Key Vault."
+			}
+		},
+		"mlWorkspaceName": {
+			"type": "string",
+			"defaultValue": "mymlworkspace",
+			"metadata": {
+				"description": "The name of the Azure Machine Learning workspace."
+			}
+		},
+		"location": {
+			"type": "string",
+			"defaultValue": "southcentralus",
+			"metadata": {
+				"description": "The location of the Azure resources."
+			}
+		},
+		"sku": {
+			"type": "string",
+			"defaultValue": "standard",
+			"metadata": {
+				"description": "The SKU of the Azure Cognitive Search service."
+			}
+		},
+		"replicaCount": {
+			"type": "int",
+			"defaultValue": 1,
+			"metadata": {
+				"description": "The number of replicas for the Azure Cognitive Search service."
+			}
+		},
+		"vaultSku": {
+			"type": "string",
+			"defaultValue": "standard",
+			"metadata": {
+				"description": "The SKU of the Azure Key Vault."
+			}
+		},
+		"mlComputeSize": {
+			"type": "string",
+			"defaultValue": "Standard_DS3_v2",
+			"metadata": {
+				"description": "The size of the Azure Machine Learning compute instance."
+			}
+		},
+		"mlComputeMinNodes": {
+			"type": "int",
+			"defaultValue": 0,
+			"metadata": {
+				"description": "The minimum number of nodes for the Azure Machine Learning compute instance."
+			}
+		},
+		"mlComputeMaxNodes": {
+			"type": "int",
+			"defaultValue": 5,
+			"metadata": {
+				"description": "The maximum number of nodes for the Azure Machine Learning compute instance."
+			}
+		},
+		"mlComputeIdleSecondsBeforeScaleDown": {
+			"type": "int",
+			"defaultValue": 300,
+			"metadata": {
+				"description": "The number of seconds of idle time before scaling down the Azure Machine Learning compute instance."
+			}
+		}
+	},
+	"resources": [{
+			"type": "Microsoft.Search/searchServices",
+			"apiVersion": "2020-08-01",
+			"name": "[parameters('searchServiceName')]",
+			"location": "[parameters('location')]",
+			"sku": {
+				"name": "[parameters('sku')]"
+			},
+			"properties": {
+				"replicaCount": "[parameters('replicaCount')]"
+			}
+		},
+		{
+			"type": "Microsoft.CognitiveServices/accounts",
+			"apiVersion": "2022-12-01",
+			"name": "[parameters('openAiResourceName')]",
+			"location": "[parameters('location')]",
+			"sku": {
+				"name": "S0"
+			},
+			"kind": "CognitiveServices",
+			"properties": {}
+		},
+		{
+			"type": "Microsoft.KeyVault/vaults",
+			"apiVersion": "2019-09-01",
+			"name": "[parameters('keyVaultName')]",
+			"location": "[parameters('location')]",
+			"properties": {
+				"sku": {
+					"name": "[parameters('vaultSku')]"
+				},
+				"tenantId": "[subscription().tenantId]",
+				"accessPolicies": [{
+					"objectId": "[parameters('objectId')]",
+					"tenantId": "[subscription().tenantId]",
+					"permissions": {
+						"secrets": [
+							"get",
+							"list"
+						]
+					}
+				}]
+			}
+		},
+		{
+			"type": "Microsoft.MachineLearningServices/workspaces",
+			"apiVersion": "2021-01-01",
+			"name": "[parameters('mlWorkspaceName')]",
+			"location": "[parameters('location')]",
+			"properties": {
+				"description": "Azure Machine Learning workspace",
+				"compute": {
+					"name": "amlcompute",
+					"properties": {
+						"vmSize": "[parameters('mlComputeSize')]",
+						"minNodes": "[parameters('mlComputeMinNodes')]",
+						"maxNodes": "[parameters('mlComputeMaxNodes')]",
+						"idleSecondsBeforeScaleDown": "[parameters('mlComputeIdleSecondsBeforeScaleDown')]"
+					}
+				}
+			}
+		}
+	],
+	"outputs": {
+		"searchServiceEndpoint": {
+			"type": "string",
+			"value": "[reference(parameters('searchServiceName')).endpoint]"
+		},
+		"searchServiceAdminKey": {
+			"type": "securestring",
+			"value": "[listKeys(parameters('searchServiceName'), '2019-05-06').adminKey]"
+		},
+		"openAiResourceEndpoint": {
+			"type": "string",
+			"value": "[reference(parameters('openAiResourceName')).endpoint]"
+		},
+		"openAiResourceKey": {
+			"type": "securestring",
+			"value": "[listKeys(parameters('openAiResourceName'), '2017-04-18').key1]"
+		},
+		"keyVaultUrl": {
+			"type": "string",
+			"value": "[reference(parameters('keyVaultName')).vaultUri]"
+		},
+		"mlWorkspaceResourceId": {
+			"type": "string",
+			"value": "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('mlWorkspaceName'))]"
+		},
+		"mlWorkspaceEndpoint": {
+			"type": "string",
+			"value": "[reference(parameters('mlWorkspaceName')).containerRegistry]"
+		},
+		"mlWorkspaceKeyVaultResourceId": {
+			"type": "string",
+			"value": "[reference(parameters('mlWorkspaceName')).identity.principalId]"
+		}
+	}
 }
